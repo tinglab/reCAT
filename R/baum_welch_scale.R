@@ -1,3 +1,21 @@
+#there is some function that you can use to do baum welch
+
+#   normalDis : get the Normal distribution
+
+#   calcEmissionProbs : get emission probability
+
+#   forwardPro : get forward probability
+
+#   backwardPro : get backward probability
+
+#   mulP : get the product of a list value
+
+#   gammaPro : get the gamma probability that will be used to calcule new transition probability
+
+#   calclogP : this is the judgement condition whether to end
+
+#   myBW : main function 
+
 normalDis <- function(val)
 {
   len = dim(val)[1]

@@ -1,5 +1,19 @@
 require(ggplot2)
 
+# there are four functions to plot the result:
+#   
+#   plot_bayes_base : plot the bayes_score in ordIndex
+# 
+#   plot_mean_base : plot the mean_score in ordIndex
+#   
+#   plot_bayes_bw : plot the bayes_score in ordIndex and use HMM to judge the G1,S,G2/M regions
+#   
+#   plot_mean_bw : plot the mean_score in ordIndex and use HMM to judge the G1,S,G2/M regions
+# 
+#   in plot_bayes_bw and plot_mean_bw function, the parameter bw_result is the HMM result get before
+#   the parameter bw_ord is the order to adjust the ordIndex so that the time series is start from G1(or G0)
+
+
 plot_bayes_base <- function(bayes_score, ordIndex)
 {
   cell = bayes_score[ordIndex, ]

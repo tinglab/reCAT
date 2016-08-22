@@ -1,3 +1,8 @@
+# there are functions that do Naive bayes
+# 
+# the result is bayes_score
+
+
 getPairs <- function(data, G1.marker.pairs, 
                      S.marker.pairs, G2M.marker.pairs, genes.training){
   genes.test<-row.names(data)

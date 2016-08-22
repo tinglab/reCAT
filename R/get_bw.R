@@ -1,3 +1,24 @@
+# there are two funcitons to get HMM
+# 
+# the parameters are:
+#   
+#   bayes_score : calculate before
+#   mean_score : calculate before
+#   G1.id, S.id, G2M.id: a region that you think it is. For example, there are 30 cells, and the ordIndex may 
+#                       2  1  7 27 20 25 18  8  9 17 15  3 12 11 13  5 19 16 21 22 26 29 14 10 23  6  4 30 24 28
+#                       then you can plot it use plot_bayes_base or plot_mean_base function in plot.R
+#                       so you can judge where is G1, where is S and where is G2/M(sometimes has G0)
+#                       the parameter is the region you judge, like G1.id = (2:5), S.id = (10:15), G2M.id = c(20:25)                    
+#   ordIndex : calculate before
+#   fob : when the cells are ordered in ordIndex, the time series is forward(=1) or backward(=0) 
+
+# when we get HMM, we should do baum welch first to get the origrin transition probability and emission probability
+# 
+# get_bw_there is a function to calcule HMM when the cell is in three types(G1, S, G2/M) 
+# while get_bw_four is in four types(add G0)  
+                      
+
+
 source("HMM.R")
 source("baum_welch_scale.R")
 

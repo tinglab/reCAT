@@ -1,3 +1,5 @@
+# get mean score
+
 averageScoreall <- function(data, ccgenes)
 {
 

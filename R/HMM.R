@@ -1,3 +1,5 @@
+# there are funcions to do HMM
+
 transProb <- function(statlist)
 {
   smat = matrix(0,nrow = 3, ncol = 3)

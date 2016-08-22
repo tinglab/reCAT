@@ -1,5 +1,7 @@
 # in this function, you should input a matrix that you want to calculate bayes_score and mean_score.
+
 # the matrix is transposition of test_exp(you use in get the ordIndex)
+
 # ola_mES_2i.RData in R is a sample
 
   

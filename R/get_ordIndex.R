@@ -1,3 +1,8 @@
+# get the order
+# 
+# you can choose thread you want to run the order (threadnum)
+
+
 source("bestEnsembleComplexTSP.r")
 
 get_ordIndex <- function(test_exp, threadnum)
