@@ -1,129 +1,141 @@
-# there are two funcitons to get HMM
+# there are two funcitons to get HMM, main function is get_HMM_order
 # 
 # the parameters are:
 #   
 #   bayes_score : calculate before
 #   mean_score : calculate before
-#   G1.id, S.id, G2M.id: a region that you think it is. For example, there are 30 cells, and the ordIndex may 
-#                       2  1  7 27 20 25 18  8  9 17 15  3 12 11 13  5 19 16 21 22 26 29 14 10 23  6  4 30 24 28
-#                       then you can plot it use plot_bayes_base or plot_mean_base function in plot.R
-#                       so you can judge where is G1, where is S and where is G2/M(sometimes has G0)
-#                       the parameter is the region you judge, like G1.id = (2:5), S.id = (10:15), G2M.id = c(20:25)                    
+#   cls_num : class number you want
+#   rdata : include (G0), G1, S, G2M region. 
+#           when you get order, you can plot use plot_bayes_base or plot_mean_base function in plot.R
+#           so you can judge where is G1, where is S and where is G2/M, the parameter is the region you judge
+#           rdata = t(data.frame(c(2,5), c(10,15), c(20,25))), means from 2 to 5 is G1, 10 to 15 is S and 20 to 25 is G2M                  
 #   ordIndex : calculate before
 #   fob : when the cells are ordered in ordIndex, the time series is forward(=1) or backward(=0) 
 
 # when we get HMM, we should do baum welch first to get the origrin transition probability and emission probability
 # 
-# get_bw_there is a function to calcule HMM when the cell is in three types(G1, S, G2/M) 
-# while get_bw_four is in four types(add G0)  
                       
 
 
 source("HMM.R")
 source("baum_welch_scale.R")
 
-get_bw_three <- function(bayes_score, mean_score, G1.id, S.id, G2M.id, ordIndex, fob)
+get_region <- function(list, len)
 {
-  transPro = matrix(0, 3, 3)
-  transPro[1,1] = 0.5
-  transPro[1,2] = 0.5
-  transPro[2,2] = 0.5
-  transPro[2,3] = 0.5
-  transPro[3,3] = 0.5
-  transPro[3,1] = 0.5
-  
-  mypi = c(1/3, 1/3, 1/3, 1/3)
-  
-  pred2 = bayes_score[ordIndex, ]
-  result2 = mean_score[ordIndex, ]
- 
-  G1val = data.frame(x1 = result2$G1Score[G1.id], x2 = result2$G1SScore[G1.id],x3 = result2$SScore[G1.id],
-                     x4 = result2$G2Score[G1.id], x5 = result2$G2MScore[G1.id], x6 = result2$MScore[G1.id],
-                     x7 = pred2$G1.score[G1.id], x8 = pred2$S.score[G1.id], x9 = pred2$G2M.score[G1.id])
-  
-  Sval = data.frame(x1 = result2$G1Score[S.id], x2 = result2$G1SScore[S.id],x3 = result2$SScore[S.id],
-                    x4 = result2$G2Score[S.id], x5 = result2$G2MScore[S.id], x6 = result2$MScore[S.id],
-                    x7 = pred2$G1.score[S.id], x8 = pred2$S.score[S.id], x9 = pred2$G2M.score[S.id])
-  
-  G2Mval = data.frame(x1 = result2$G1Score[G2M.id], x2 = result2$G1SScore[G2M.id],x3 = result2$SScore[G2M.id],
-                      x4 = result2$G2Score[G2M.id], x5 = result2$G2MScore[G2M.id], x6 = result2$MScore[G2M.id],
-                      x7 = pred2$G1.score[G2M.id], x8 = pred2$S.score[G2M.id], x9 = pred2$G2M.score[G2M.id])
-  
-  G1nd = normalDis(G1val)
-  Snd = normalDis(Sval)
-  G2Mnd = normalDis(G2Mval)
-  ndresult <- rbind(G1nd, Snd, G2Mnd)
-  
-  if (fob == 1)
+  if (list[1] < list[2])
   {
-    obval = data.frame(x1 = (result2$G1Score),x2 = (result2$G1SScore),x3 = (result2$SScore),
-                       x4 = (result2$G2Score), x5 = (result2$G2MScore), x6 = (result2$MScore),
-                       x7 = (pred2$G1.score), x8 = (pred2$S.score), x9 = (pred2$G2M.score))
+    return(c(list[1]:list[2]))
   }
   else
   {
-    obval = data.frame(x1 = rev(result2$G1Score),x2 = rev(result2$G1SScore),x3 = rev(result2$SScore),
-                       x4 = rev(result2$G2Score), x5 = rev(result2$G2MScore), x6 = rev(result2$MScore),
-                       x7 = rev(pred2$G1.score), x8 = rev(pred2$S.score), x9 = rev(pred2$G2M.score))
+    return(c(list[1]:len, 1:list[2]))
   }
-  
-  obval = as.matrix(obval)
-  
-  myresult = myBW(transProb = transPro, nd = ndresult, mypi = mypi, obval = obval, 20, M = 3)
-  rs1 = myviterbi(obval = obval, transProb = myresult$transProb, ndresult = myresult$nd, mypi = myresult$mypi, M = 3)
-  
-  nowr = order(rs1$rmat[length(ordIndex),])[3]
-  rr = c(nowr)
-  for (i in (length(ordIndex)-1):1)
-  {
-    rr = c(rr,rs1$pmat[i,nowr])
-    nowr = rs1$pmat[i,nowr]
-  }
-  rr <- rev(rr)
-  rr[1] = order(rs1$rmat[1,])[3]
-  
-  return(bw_order = rr)
 }
 
-
-get_bw_four <- function(bayes_score, mean_score, G0.id, G1.id, S.id, G2M.id, ordIndex, fob)
+get_HMM_order <- function(bayes_score, mean_score, ordIndex, cls_num, fob, rdata = NULL)
 {
-  transPro = matrix(0, 4, 4)
-  transPro[1,1] = 0.5
-  transPro[1,2] = 0.5
-  transPro[2,2] = 0.5
-  transPro[2,3] = 0.5
-  transPro[3,3] = 0.5
-  transPro[3,4] = 0.5
-  transPro[4,4] = 0.5
-  transPro[4,1] = 0.5
-  
-  mypi = c(1/4, 1/4, 1/4, 1/4)
-  
   pred2 = bayes_score[ordIndex, ]
   result2 = mean_score[ordIndex, ]
   
-  G0val = data.frame(x1 = result2$G1Score[G0.id], x2 = result2$G1SScore[G0.id],x3 = result2$SScore[G0.id],
-                     x4 = result2$G2Score[G0.id], x5 = result2$G2MScore[G0.id], x6 = result2$MScore[G0.id],
-                     x7 = pred2$G1.score[G0.id], x8 = pred2$S.score[G0.id], x9 = pred2$G2M.score[G0.id])
+  if (cls_num == 3)
+  {
+    transPro = matrix(0, 3, 3)
+    transPro[1,1] = 0.5
+    transPro[1,2] = 0.5
+    transPro[2,2] = 0.5
+    transPro[2,3] = 0.5
+    transPro[3,3] = 0.5
+    transPro[3,1] = 0.5
+    
+    mypi = c(1/3, 1/3, 1/3, 1/3)
+    
+    if(is.null(rdata))
+    {
+      rdata = matrix(nrow = 3, ncol = 2)
+      print("please input G1's region like 2 5")
+      rdata[1,] = scan()
+      print("please input S's region like 2 5")
+      rdata[2,] = scan()
+      print("please input G2M's region like 2 5")
+      rdata[3,] = scan()
+    }
+    
+    G1.id = get_region(rdata[1,], ordIndex)
+    S.id = get_region(rdata[2,], ordIndex)
+    G2M.id = get_region(rdata[3,], ordIndex)
+    
+    G1val = data.frame(x1 = result2$G1Score[G1.id], x2 = result2$G1SScore[G1.id],x3 = result2$SScore[G1.id],
+                       x4 = result2$G2Score[G1.id], x5 = result2$G2MScore[G1.id], x6 = result2$MScore[G1.id],
+                       x7 = pred2$G1.score[G1.id], x8 = pred2$S.score[G1.id], x9 = pred2$G2M.score[G1.id])
+    
+    Sval = data.frame(x1 = result2$G1Score[S.id], x2 = result2$G1SScore[S.id],x3 = result2$SScore[S.id],
+                      x4 = result2$G2Score[S.id], x5 = result2$G2MScore[S.id], x6 = result2$MScore[S.id],
+                      x7 = pred2$G1.score[S.id], x8 = pred2$S.score[S.id], x9 = pred2$G2M.score[S.id])
+    
+    G2Mval = data.frame(x1 = result2$G1Score[G2M.id], x2 = result2$G1SScore[G2M.id],x3 = result2$SScore[G2M.id],
+                        x4 = result2$G2Score[G2M.id], x5 = result2$G2MScore[G2M.id], x6 = result2$MScore[G2M.id],
+                        x7 = pred2$G1.score[G2M.id], x8 = pred2$S.score[G2M.id], x9 = pred2$G2M.score[G2M.id])
+    
+    G1nd = normalDis(G1val)
+    Snd = normalDis(Sval)
+    G2Mnd = normalDis(G2Mval)
+    ndresult <- rbind(G1nd, Snd, G2Mnd)
+  }
   
-  G1val = data.frame(x1 = result2$G1Score[G1.id], x2 = result2$G1SScore[G1.id],x3 = result2$SScore[G1.id],
-                     x4 = result2$G2Score[G1.id], x5 = result2$G2MScore[G1.id], x6 = result2$MScore[G1.id],
-                     x7 = pred2$G1.score[G1.id], x8 = pred2$S.score[G1.id], x9 = pred2$G2M.score[G1.id])
-  
-  Sval = data.frame(x1 = result2$G1Score[S.id], x2 = result2$G1SScore[S.id],x3 = result2$SScore[S.id],
-                    x4 = result2$G2Score[S.id], x5 = result2$G2MScore[S.id], x6 = result2$MScore[S.id],
-                    x7 = pred2$G1.score[S.id], x8 = pred2$S.score[S.id], x9 = pred2$G2M.score[S.id])
-  
-  G2Mval = data.frame(x1 = result2$G1Score[G2M.id], x2 = result2$G1SScore[G2M.id],x3 = result2$SScore[G2M.id],
-                      x4 = result2$G2Score[G2M.id], x5 = result2$G2MScore[G2M.id], x6 = result2$MScore[G2M.id],
-                      x7 = pred2$G1.score[G2M.id], x8 = pred2$S.score[G2M.id], x9 = pred2$G2M.score[G2M.id])
-  
-  G0nd = normalDis(G0val)
-  G1nd = normalDis(G1val)
-  Snd = normalDis(Sval)
-  G2Mnd = normalDis(G2Mval)
-  ndresult <- rbind(G0nd, G1nd, Snd, G2Mnd)
+  if (cls_num == 4)
+  {
+    transPro = matrix(0, 4, 4)
+    transPro[1,1] = 0.5
+    transPro[1,2] = 0.5
+    transPro[2,2] = 0.5
+    transPro[2,3] = 0.5
+    transPro[3,3] = 0.5
+    transPro[3,4] = 0.5
+    transPro[4,4] = 0.5
+    transPro[4,1] = 0.5
+    
+    mypi = c(1/4, 1/4, 1/4, 1/4)
+    
+    if(is.null(rdata))
+    {
+      rdata = matrix(nrow = 4, ncol = 2)
+      print("please input G0's region like 2 5")
+      rdata[1,] = scan()
+      print("please input G1's region like 2 5")
+      rdata[2,] = scan()
+      print("please input S's region like 2 5")
+      rdata[3,] = scan()
+      print("please input G2M's region like 2 5")
+      rdata[4,] = scan()
+    }
+    
+    G0.id = get_region(rdata[1,], ordIndex)
+    G1.id = get_region(rdata[2,], ordIndex)
+    S.id = get_region(rdata[3,], ordIndex)
+    G2M.id = get_region(rdata[4,], ordIndex)
+    
+    G0val = data.frame(x1 = result2$G1Score[G0.id], x2 = result2$G1SScore[G0.id],x3 = result2$SScore[G0.id],
+                       x4 = result2$G2Score[G0.id], x5 = result2$G2MScore[G0.id], x6 = result2$MScore[G0.id],
+                       x7 = pred2$G1.score[G0.id], x8 = pred2$S.score[G0.id], x9 = pred2$G2M.score[G0.id])
+    
+    G1val = data.frame(x1 = result2$G1Score[G1.id], x2 = result2$G1SScore[G1.id],x3 = result2$SScore[G1.id],
+                       x4 = result2$G2Score[G1.id], x5 = result2$G2MScore[G1.id], x6 = result2$MScore[G1.id],
+                       x7 = pred2$G1.score[G1.id], x8 = pred2$S.score[G1.id], x9 = pred2$G2M.score[G1.id])
+    
+    Sval = data.frame(x1 = result2$G1Score[S.id], x2 = result2$G1SScore[S.id],x3 = result2$SScore[S.id],
+                      x4 = result2$G2Score[S.id], x5 = result2$G2MScore[S.id], x6 = result2$MScore[S.id],
+                      x7 = pred2$G1.score[S.id], x8 = pred2$S.score[S.id], x9 = pred2$G2M.score[S.id])
+    
+    G2Mval = data.frame(x1 = result2$G1Score[G2M.id], x2 = result2$G1SScore[G2M.id],x3 = result2$SScore[G2M.id],
+                        x4 = result2$G2Score[G2M.id], x5 = result2$G2MScore[G2M.id], x6 = result2$MScore[G2M.id],
+                        x7 = pred2$G1.score[G2M.id], x8 = pred2$S.score[G2M.id], x9 = pred2$G2M.score[G2M.id])
+    
+    G0nd = normalDis(G0val)
+    G1nd = normalDis(G1val)
+    Snd = normalDis(Sval)
+    G2Mnd = normalDis(G2Mval)
+    ndresult <- rbind(G0nd, G1nd, Snd, G2Mnd)
+  }
   
   if (fob == 1)
   {
@@ -140,10 +152,10 @@ get_bw_four <- function(bayes_score, mean_score, G0.id, G1.id, S.id, G2M.id, ord
   
   obval = as.matrix(obval)
   
-  myresult = myBW(transProb = transPro, nd = ndresult, mypi = mypi, obval = obval, 20, M = 4)
-  rs1 = myviterbi(obval = obval, transProb = myresult$transProb, ndresult = myresult$nd, mypi = myresult$mypi, M = 4)
-  
-  nowr = order(rs1$rmat[length(ordIndex),])[4]
+  myresult = myBW(transProb = transPro, nd = ndresult, mypi = mypi, obval = obval, 20, M = cls_num)
+  rs1 = myviterbi(obval = obval, transProb = myresult$transProb, ndresult = myresult$nd, mypi = myresult$mypi, M = cls_num)
+    
+  nowr = order(rs1$rmat[length(ordIndex),])[cls_num]
   rr = c(nowr)
   for (i in (length(ordIndex)-1):1)
   {
@@ -151,7 +163,12 @@ get_bw_four <- function(bayes_score, mean_score, G0.id, G1.id, S.id, G2M.id, ord
     nowr = rs1$pmat[i,nowr]
   }
   rr <- rev(rr)
-  rr[1] = order(rs1$rmat[1,])[4]
+  rr[1] = order(rs1$rmat[1,])[cls_num]
   
+  if (fob == 0)
+  {
+    rr = rev(rr)
+  }
   return(bw_result = rr)
+  
 }
