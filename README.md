@@ -6,15 +6,15 @@ reCAT is easy to use. Now we use ola_mES_2i in /data as example
 
 when you use our tools, you should install some packages first, the package list is as follows:
 
-ggplot2
+***ggplot2***
 
-doParallel
+***doParallel***
 
-mclust
+***mclust***
 
-cluster
+***cluster***
 
-TSP
+***TSP***
 
 ####input data
 
