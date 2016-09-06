@@ -67,5 +67,11 @@ plot with HMM result:
 	
 	source("plot.R")
 	load("../data/ola_mES_2i_hmm.RData")
-	plot_bayes_bw(score_result$bayes_score, ordIndex, hmm_result, hmm_order, 1)
-	plot_mean_bw(score_result$mean_score, ordIndex, hmm_result, hmm_order, 1)
+	plot_bayes(score_result$bayes_score, ordIndex, hmm_result, hmm_order, 1)
+	plot_mean(score_result$mean_score, ordIndex, hmm_result, hmm_order, 1)
+the result is like follows:
+
+<div align="center">
+<img src="./pic/ola_2i_bayes_hmm.png" width = "300" height = "200" alt="ola_2i_bayes_hmm"/>
+<img src="./pic/ola_2i_mean_hmm.png" width = "300" height = "200" alt="ola_2i_mean_hmm"/>
+</div>
