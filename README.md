@@ -1,3 +1,6 @@
+#test
+![my test](./pic/test.jpg)
+
 ##How to use
 ----------
 reCAT is easy to use. Now we use ola_mES_2i in /data as example
