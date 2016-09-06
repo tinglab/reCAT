@@ -49,8 +49,7 @@ plot with order you get:
 	plot_mean(score_result$mean_score, ordIndex)
 the result is like follows:
 
-![ola_2i_bayes](./pic/ola_2i_bayes.png =100x100)		
-![ola_2i_mean](./pic/ola_2i_mean.png =100x100)
+<img src="./pic/ola_2i_bayes.png" width = "100" height = "100" alt="ola_2i_bayes"/>
 
 ####HMM
 for example:
