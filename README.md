@@ -49,7 +49,10 @@ plot with order you get:
 	plot_mean(score_result$mean_score, ordIndex)
 the result is like follows:
 
-<img src="./pic/ola_2i_bayes.png" width = "100" height = "100" alt="ola_2i_bayes"/>
+<div align="center">
+<img src="./pic/ola_2i_bayes.png" width = "300" height = "200" alt="ola_2i_bayes"/>
+<img src="./pic/ola_2i_mean.png" width = "300" height = "200" alt="ola_2i_mean"/>
+</div>
 
 ####HMM
 for example:
