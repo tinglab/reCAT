@@ -13,7 +13,7 @@ my_theme <- function()
     panel.background = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    legend.text = element_text(size = 20),
+    legend.text = element_text(size = 30),
     legend.key = element_rect(fill = "white"))
 }
 
