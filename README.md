@@ -1,18 +1,18 @@
 ##What is reCAT?
------------
+
 reCAT is a modelling framework for unsynchronized single-cell transcriptome data that can reconstruct a high-resolution cell cycle time-series. It is mainly based on traveling salesman problem (TSP), Gaussian mixture model (GMM) and hidden Markov model (HMM). We developed an R based software package which is easy to use. The performance is relatively accurate and stable. Thanks for using!
 
 Software by Zehua Liu, Huazhe Lou and Hao Wang. reCAT is explained in more detail in the accompanying publication. 
 
 ##Philosophy
-----------
+
 Two fundamental assumptions underlie the reCAT approach: that 1) different cell cycle phases form a cycle, and 2) the change of transcriptome profile from one phase to the next should be monotonic, increasing with time span widths. 
 
 ##Installation
-----------
+
 
 ##How to use
-----------
+
 reCAT is easy to use. Now we use ola_mES_2i in /data as example
 
 ####1.preparatory work
