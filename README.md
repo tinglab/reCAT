@@ -41,7 +41,8 @@ when you load the ola_mES_2i.RData, you can see a matrix named "test_exp" and it
 
 ####3.get order
 
-When you preprocessing your test data, you can get its order(cell's time series) easily with ***get_ordIndex*** function. In this function, there are two parameters, one is the input data, the other is thread number, the threaad number depends on the number of cores. So maybe you can choose a large thread number like 20 to speed it up when you run it on a server 
+When you preprocessing your test data, you can get its order(cell's time series) easily with ***get_ordIndex*** function. In this function, there are two parameters, one is the input data, the other is thread number, the threaad number depends on the number of cores. So maybe you can choose a large thread number like 20 to speed it up when you run it on a server.
+
 for example:
 
 	source("get_ordIndex.R")
@@ -50,6 +51,7 @@ for example:
 
 ####4.get bayes-score and mean-score
 In reCAT, there are two scores, bayes score and mean score, you can easily get both when you use ***get_score*** function.
+
 for example:
 
 	source("get_score.R")
@@ -73,19 +75,34 @@ the result is like follows:
 </div>
 
 ####6.HMM
+Now you have the scores and time series, but you don't know whether the cell is G1 or S or G2/M. In this case, you can use ***get_hmm_order*** function
+to sort the cells.
+
+In this function, there are six parameters: bayes_score, mean_score and ordIndex are values you get before. cls_num is class number you want, generally is 3(G1, S, G2/M) or 4(G0, G1, S, G2/M). fob is the direction of time series, 1 is forward and 0 is backward. rdata is the class region you judge from the picture you draw before. for example, in ola_mES_2i, we can easily judge cells in c(210:230) is G1, cells in c(40:60) is G2/M, and cells in c(170:190) is S, so the rdata is 
+
+		start	end
+	1	210		230
+	2	170		190
+	3	40		60
+
 for example:
 	
 	source("get_hmm.R")
 	load("../data/ola_mES_2i_ordIndex.RData")
 	load("../data/ola_mES_2i_region.RData")
-	hmm_result <- get_hmm_order(score_result$bayes_score, score_result$mean_score, ordIndex, cls_num = 3, fob = 0, rdata = rdata)
+	hmm_result <- get_hmm_order(bayes_score = score_result$bayes_score, 
+		mean_score = score_result$mean_score, 
+		ordIndex = ordIndex, cls_num = 3, fob = 0, rdata = rdata)
 
 ####7.plot2
-plot with HMM result:
+Now you have the scores, time series and classified information, you can draw these use ***plot*** function
+
+In this function, cls_result is classified information you get in HMM. cls_ord is time series you adjust, for example, you want the time series start
+at fourth cell, you can set cls_ord is c(4:length(ordIndex), 1:3). colorbar is a boolean value, 1 is draw the color bar, 0 is not.
 	
 	source("plot.R")
 	load("../data/ola_mES_2i_hmm.RData")
-	plot_bayes(score_result$bayes_score, ordIndex, hmm_result, hmm_order, 1)
+	plot_bayes(score_result$bayes_score, ordIndex, cls_result = hmm_result, cls_ord = hmm_order, colorbar = 1)
 	plot_mean(score_result$mean_score, ordIndex, hmm_result, hmm_order, 1)
 the result is like follows:
 
