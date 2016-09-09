@@ -10,7 +10,7 @@ source("mean_score_function.R")
 load("../data/tranning.RData")
 load("../data/ccgene.RData")
 
-getScore <- function(talentDE)
+get_score <- function(talentDE)
 {
   y <- rep(0,length(training.data[1,]))
   cname <- colnames(training.data)

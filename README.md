@@ -49,11 +49,11 @@ for example:
 	ordIndex <- get_ordIndex(test_exp, 10)
 
 ####4.get bayes-score and mean-score
-In reCAT, there are two scores, bayes score and mean score, you can easily get both when you use ***getScore*** function.
+In reCAT, there are two scores, bayes score and mean score, you can easily get both when you use ***get_score*** function.
 for example:
 
 	source("get_score.R")
-	score_result <- getScore(t(test_exp))
+	score_result <- get_score(t(test_exp))
 you can use the following two orders to view the two scores
 
 	score_result$bayes_score
@@ -75,10 +75,10 @@ the result is like follows:
 ####6.HMM
 for example:
 	
-	source("get_bw.R")
+	source("get_hmm.R")
 	load("../data/ola_mES_2i_ordIndex.RData")
 	load("../data/ola_mES_2i_region.RData")
-	hmm_result <- get_bw_three(score_result$bayes_score, score_result$mean_score, ordIndex, cls_num = 3, fob = 0)
+	hmm_result <- get_hmm_order(score_result$bayes_score, score_result$mean_score, ordIndex, cls_num = 3, fob = 0, rdata = rdata)
 
 ####7.plot2
 plot with HMM result:
