@@ -13,11 +13,11 @@ Two fundamental assumptions underlie the reCAT approach: that 1) different cell 
 
 ##How to use
 
-reCAT is easy to use. Now we use ola_mES_2i in /data as example
+reCAT is achieved in R and is easy to use. there are some test data in /data, now we use ola_mES_2i.RData as example.
 
 ####1.preparatory work
 
-when you use our tools, you should install some packages first, the package list is as follows:
+when you use our tool, you should install some packages first, the package list is as follows:
 
 ***ggplot2***
 
@@ -34,32 +34,33 @@ when you use our tools, you should install some packages first, the package list
 in reCAT, there are some  requirements for the input data. 
 
 1. the genes must be in ***cyclebaseGeneList***
-2. 
+2. the genes name must be translated to there annotation like "ENSMUSG00000096210"
+3. the value in data is log2(TPM+1)
 
-*ola_mES_2i.RData* in */data* is an example
+when you load the ola_mES_2i.RData, you can see a matrix named "test_exp" and it is a standard input data.
 
 ####3.get order
 
-when you preprocessing your test data, you can get its order(cell's time series) easily with ***get_ordIndex*** function. In this function, there are two parameters, one is the input data, the other is thread number, so maybe you can choose a large thread number like 20 to speed it up. 
+When you preprocessing your test data, you can get its order(cell's time series) easily with ***get_ordIndex*** function. In this function, there are two parameters, one is the input data, the other is thread number, the threaad number depends on the number of cores. So maybe you can choose a large thread number like 20 to speed it up when you run it on a server 
 for example:
 
 	source("get_ordIndex.R")
 	load("../data/ola_mES_2i.RData")
 	ordIndex <- get_ordIndex(test_exp, 10)
 
-####4.get bayes-score and mean score
-in reCAT, there are two scores to 
+####4.get bayes-score and mean-score
+In reCAT, there are two scores, bayes score and mean score, you can easily get both when you use ***getScore*** function.
 for example:
 
 	source("get_score.R")
 	score_result <- getScore(t(test_exp))
-you can use the following two orders to get scores
+you can use the following two orders to view the two scores
 
 	score_result$bayes_score
 	score_result$mean_score
 
 ####5.plot1
-plot with order you get:
+Now you have the scores and time series(ordIndex you get before), you can draw the scores along the time series use ***plot*** function
 
 	source("plot.R")
 	plot_bayes(score_result$bayes_score, ordIndex)
