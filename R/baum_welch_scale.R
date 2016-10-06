@@ -28,7 +28,7 @@ normalDis <- function(val)
 
 calcEmissionProbs <- function(ndresult, nowval, M)
 {
-  result = matrix(nrow = M, ncol = length(nowval))
+  result = matrix(0, nrow = M, ncol = length(nowval))
   for (i in 0:(M-1))
   {
     for (j in 1:length(nowval))
@@ -54,7 +54,7 @@ mulP <- function(plist)
 
 forwardPro <- function(transProb, nd, mypi, obval, M)
 {
-  pmat = matrix(nrow = dim(obval)[1], ncol = M)
+  pmat = matrix(0, nrow = dim(obval)[1], ncol = M)
   c = rep(0, dim(obval)[1])
   nowval = obval[1,]
   nowemissionp = calcEmissionProbs(ndresult = nd, nowval = nowval, M = M)
@@ -97,7 +97,7 @@ forwardPro <- function(transProb, nd, mypi, obval, M)
 
 backwardPro <- function(transProb, nd, mypi, obval, M, c = c)
 {
-  pmat = matrix(nrow = dim(obval)[1], ncol = M)
+  pmat = matrix(0, nrow = dim(obval)[1], ncol = M)
   for(i in 1:M)
   {
     pmat[dim(obval)[1],i] = c[dim(obval)[1]]
@@ -108,10 +108,19 @@ backwardPro <- function(transProb, nd, mypi, obval, M, c = c)
     nowval = obval[i,]
     nowemissionp = calcEmissionProbs(ndresult = nd, nowval = nowval, M = M)
     calcp = apply(nowemissionp, 1, mulP)
+
     for(j in 1:M)
     {
       x = 0
-      for (k in 1:M){x = x + calcp[k]*transProb[j,k]*pmat[i,k]}
+      for (k in 1:M)
+      {
+        if (transProb[j,k] == 0)
+        {
+          next
+        }
+        x = x + calcp[k]*transProb[j,k]*pmat[i,k]
+      }
+      
       pmat[i-1, j] = x*c[i-1]
     }
   }
@@ -132,16 +141,37 @@ gammaPro <- function(fPro, bPro, transProb, nd, mypi, obval, M, c)
     {
       for (j in 1:M)
       {
-        mr[i,j,t] = fPro[t,i]*transProb[i,j]*mulP(nowemissionp[j,])*bPro[t+1,j]
+        if (transProb[i,j] == 0 || fPro[t,i] == 0)
+        {
+          mr[i,j,t] = 0
+        }
+        else
+        {
+          mr[i,j,t] = fPro[t,i]*transProb[i,j]*mulP(nowemissionp[j,])*bPro[t+1,j]
+        }
       }
-      r[t,i] = fPro[t,i]*bPro[t,i] / c[t]
+      if (fPro[t,i] == 0)
+      {
+        r[t,i] = 0
+      }
+      else
+      {
+        r[t,i] = fPro[t,i]*bPro[t,i] / c[t]
+      }
     }
   }
   
   t = dim(obval)[1]
   for (i in 1:M)
   {
-    r[t,i] = fPro[t, i] * bPro[t,i] / c[t]
+    if (fPro[t,i] == 0)
+    {
+      r[t,i] = 0
+    }
+    else
+    {
+      r[t,i] = fPro[t,i]*bPro[t,i] / c[t]
+    }
   }
   
   return(list(mr = mr, r = r))
@@ -164,13 +194,11 @@ myBW <- function(transProb, nd, mypi, obval, N, M)
   q = rep(0, N)
   for(k in 1:N)
   {
-    message(k)
     fPro = forwardPro(transProb = transProb, nd = nd, mypi = mypi, obval = obval, M = M)
     bPro = backwardPro(transProb = transProb, nd = nd, mypi = mypi, obval = obval, M = M, c = fPro$c)
     
     gammaP = gammaPro(fPro = fPro$pmat, bPro = bPro, transProb = transProb, nd = nd, mypi = mypi, obval = obval, M = M, c = fPro$c)
-    
-    
+
     newmypi = rep(0, M)
     for (i in 1:M)
     {
@@ -216,7 +244,9 @@ myBW <- function(transProb, nd, mypi, obval, N, M)
           numer = numer + gammaP$r[t,i]*(obval[t,j]-u[(i-1)*dim(obval)[2] + j])^2
           denom = denom + gammaP$r[t,i]
         }
+
         v[(i-1)*dim(obval)[2] + j] = numer/denom
+
         if (v[(i-1)*dim(obval)[2] + j] < 0.0001){v[(i-1)*dim(obval)[2] + j] = 0.0001}
       }
     }
