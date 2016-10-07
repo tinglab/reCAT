@@ -45,7 +45,7 @@ get_hmm_order <- function(bayes_score, mean_score, ordIndex, cls_num, myord, rda
     transPro[2,2] = 0.5
     transPro[2,3] = 0.5
     transPro[3,3] = 1
-    #transPro[3,1] = 0
+    #transPro[3,1] = 0.5
     
     mypi = c(1/3, 1/3, 1/3)
     

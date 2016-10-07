@@ -88,6 +88,8 @@ forwardPro <- function(transProb, nd, mypi, obval, M)
     for(j in 1:M)
     {
       pmat[i,j] = c[i] * pmat[i,j]
+     
+      if (pmat[i,j] < 9.9e-300) {pmat[i, j] = 9.9e-300}
     }
   }
   
@@ -95,7 +97,7 @@ forwardPro <- function(transProb, nd, mypi, obval, M)
 }
 
 
-backwardPro <- function(transProb, nd, mypi, obval, M, c = c)
+backwardPro <- function(transProb, nd, mypi, obval, M, c)
 {
   pmat = matrix(0, nrow = dim(obval)[1], ncol = M)
   for(i in 1:M)
@@ -114,14 +116,13 @@ backwardPro <- function(transProb, nd, mypi, obval, M, c = c)
       x = 0
       for (k in 1:M)
       {
-        if (transProb[j,k] == 0)
-        {
-          next
-        }
         x = x + calcp[k]*transProb[j,k]*pmat[i,k]
       }
       
       pmat[i-1, j] = x*c[i-1]
+
+      if (pmat[i-1, j] > 9.9e+300){pmat[i-1, j] = 9.9e+300}
+      if (pmat[i-1, j] < 9.9e-300){pmat[i-1, j] = 9.9e-300}
     }
   }
   
@@ -141,37 +142,18 @@ gammaPro <- function(fPro, bPro, transProb, nd, mypi, obval, M, c)
     {
       for (j in 1:M)
       {
-        if (transProb[i,j] == 0 || fPro[t,i] == 0)
-        {
-          mr[i,j,t] = 0
-        }
-        else
-        {
-          mr[i,j,t] = fPro[t,i]*transProb[i,j]*mulP(nowemissionp[j,])*bPro[t+1,j]
-        }
+        mr[i,j,t] = fPro[t,i]*transProb[i,j]*mulP(nowemissionp[j,])*bPro[t+1,j]
       }
-      if (fPro[t,i] == 0)
-      {
-        r[t,i] = 0
-      }
-      else
-      {
-        r[t,i] = fPro[t,i]*bPro[t,i] / c[t]
-      }
+      r[t,i] = fPro[t,i]*bPro[t,i] / c[t]
+      if (r[t,i] < 9.9e-300) {r[t,i] = 9.9e-300}
     }
   }
   
   t = dim(obval)[1]
   for (i in 1:M)
   {
-    if (fPro[t,i] == 0)
-    {
-      r[t,i] = 0
-    }
-    else
-    {
-      r[t,i] = fPro[t,i]*bPro[t,i] / c[t]
-    }
+    r[t,i] = fPro[t,i]*bPro[t,i] / c[t]
+    if (r[t,i] < 9.9e-300) {r[t,i] = 9.9e-300}
   }
   
   return(list(mr = mr, r = r))
@@ -198,6 +180,12 @@ myBW <- function(transProb, nd, mypi, obval, N, M)
     bPro = backwardPro(transProb = transProb, nd = nd, mypi = mypi, obval = obval, M = M, c = fPro$c)
     
     gammaP = gammaPro(fPro = fPro$pmat, bPro = bPro, transProb = transProb, nd = nd, mypi = mypi, obval = obval, M = M, c = fPro$c)
+
+    if (k == 1){
+    	print(fPro)
+    	print(bPro)
+    	print(gammaP)
+    }
 
     newmypi = rep(0, M)
     for (i in 1:M)
