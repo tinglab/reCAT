@@ -78,7 +78,7 @@ the result is like follows:
 Now you have the scores and time series, but you don't know whether the cell is G1 or S or G2/M. In this case, you can use ***get_hmm_order*** function
 to sort the cells.
 
-In this function, there are six parameters: bayes_score, mean_score and ordIndex are values you get before. cls_num is class number you want, generally is 3(G1, S, G2/M) or 4(G0, G1, S, G2/M). fob is the direction of time series, 1 is forward and 0 is backward. rdata is the class region you judge from the picture you draw before. for example, in ola_mES_2i, we can easily judge cells in c(210:230) is G1, cells in c(40:60) is G2/M, and cells in c(170:190) is S, so the rdata is 
+In this function, there are six parameters: bayes_score, mean_score and ordIndex are values you get before. cls_num is class number you want, generally is 3(G1, S, G2/M) or 4(G0, G1, S, G2/M). myord is the real time series that the you can choose, for example, you choose the 4 is the start, and the real order is c(4:1, 295:5). rdata is the class region you judge from the picture you draw before. for example, in ola_mES_2i, we can easily judge cells in c(210:230) is G1, cells in c(40:60) is G2/M, and cells in c(170:190) is S, so the rdata is 
 
 		start	end
 	1	210		230
@@ -90,19 +90,31 @@ for example:
 	source("get_hmm.R")
 	load("../data/ola_mES_2i_ordIndex.RData")
 	load("../data/ola_mES_2i_region.RData")
+	myord = c(4:1, 295:5)
 	hmm_result <- get_hmm_order(bayes_score = score_result$bayes_score, 
 		mean_score = score_result$mean_score, 
-		ordIndex = ordIndex, cls_num = 3, fob = 0, rdata = rdata)
+		ordIndex = ordIndex, cls_num = 3, myord = myord, rdata = rdata)
 
-####7.plot2
+####7.choose the start 
+From the example above we can see the paramter "myord" permit choosing start as we like. But how can we now where the real start is? In our tool, you can use ***get_start*** function to get the real start. 
+
+In this function, we go through from 1 to le(le is the whole number of the cell) as start to get hmm result. Everytime we run ***get_hmm_ord*** function, we can get a likelyhood, and then we find the maximum likelyhood, this is the real start. The paramter nthread is the number of thread you can choose, default is 3. The other paramters is the same as ***get_hmm_ord***.
+
+for example:
+
+	source("get_start.R")
+	start = get_start(bayes_score = score_result$bayes_score, 
+		mean_score = score_result$mean_score, 
+		ordIndex = ordIndex, cls_num = 3, rdata = rdata, nthread = 3)
+
+####8.plot2
 Now you have the scores, time series and classified information, you can draw these use ***plot*** function
 
-In this function, cls_result is classified information you get in HMM. cls_ord is time series you adjust, for example, you want the time series start
-at fourth cell, you can set cls_ord is c(4:length(ordIndex), 1:3). colorbar is a boolean value, 1 is draw the color bar, 0 is not.
+In this function, cls_result is classified information you get in HMM. cls_ord is time series you choose, just like the myord in secetion 6. colorbar is a boolean value, 1 is draw the color bar, 0 is not.
 	
 	source("plot.R")
 	load("../data/ola_mES_2i_hmm.RData")
-	plot_bayes(score_result$bayes_score, ordIndex, cls_result = hmm_result, cls_ord = hmm_order, colorbar = 1)
+	plot_bayes(score_result$bayes_score, ordIndex, cls_result = hmm_result, cls_ord = myord, colorbar = 1)
 	plot_mean(score_result$mean_score, ordIndex, hmm_result, hmm_order, 1)
 the result is like follows:
 
@@ -110,3 +122,6 @@ the result is like follows:
 <img src="./pic/ola_2i_bayes_hmm.png" width = "300" height = "200" alt="ola_2i_bayes_hmm"/>
 <img src="./pic/ola_2i_mean_hmm.png" width = "300" height = "200" alt="ola_2i_mean_hmm"/>
 </div>
+
+####9.cluster
+Our tool can also be used to cluster cells and then find the time series of clustering result.
