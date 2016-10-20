@@ -18,7 +18,7 @@
 
 
 source("HMM.R")
-source("baum_welch_scale.R")
+source("baum_welch_scale_log.R")
 
 get_region <- function(list, len)
 {
@@ -45,7 +45,7 @@ get_hmm_order <- function(bayes_score, mean_score, ordIndex, cls_num, myord, rda
     transPro[2,2] = 0.5
     transPro[2,3] = 0.5
     transPro[3,3] = 1
-    #transPro[3,1] = 0.5
+    #transPro[3,1] = 0
     
     mypi = c(1/3, 1/3, 1/3)
     
@@ -143,8 +143,12 @@ get_hmm_order <- function(bayes_score, mean_score, ordIndex, cls_num, myord, rda
                      x7 = (pred2$G1.score)[myord], x8 = (pred2$S.score)[myord], x9 = (pred2$G2M.score)[myord])
   
   obval = as.matrix(obval)
-  
-  myresult = myBW(transProb = transPro, nd = ndresult, mypi = mypi, obval = obval, 20, M = cls_num)
+
+  #print("good!")
+  #save(transPro,ndresult,mypi,obval,M=cls_num,file="C:/experiment/BW_test.RData")  
+  iter_max = 30
+  myresult = myBW(A = transPro, nd_para = ndresult, mypi = mypi, ob_value = obval, iter_max = iter_max)
+   
   rs1 = myviterbi(obval = obval, transProb = myresult$transProb, ndresult = myresult$nd, mypi = myresult$mypi, M = cls_num)
     
   nowr = order(rs1$rmat[length(ordIndex),])[cls_num]
@@ -157,6 +161,6 @@ get_hmm_order <- function(bayes_score, mean_score, ordIndex, cls_num, myord, rda
   rr <- rev(rr)
   rr[1] = order(rs1$rmat[1,])[cls_num]
 
-  return(list(bw_result = rr, p = myresult$q))
+  return(list(bw_result = rr, p = max(myresult$q)))
 
 }
