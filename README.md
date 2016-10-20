@@ -133,4 +133,5 @@ for example:
 	source("get_cluster_result")
 	load("../data/Flo_test_exp.RData")
 	load("../data/bestEnsembleComplexTSP 10 - 216 Flo .RData")
-	cls_result = get_cluster_result(test_exp = test_exp, ensembleResultLst = ensembleResultLst, resultLst = resultLst, cls_num = 20)
+	cls_result = get_cluster_result(test_exp = test_exp, ensembleResultLst = ensembleResultLst, 
+									resultLst = resultLst, cls_num = 20)

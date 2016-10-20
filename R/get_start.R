@@ -6,18 +6,24 @@ get_start <- function(bayes_score, mean_score, ordIndex, cls_num, rdata = NULL, 
 	cl <- makeCluster(nthread)
 	registerDoParallel(cl)
 	le = length(ordIndex)
-	log_lk <- foreach (i=1:le, .combine = cbind) %dopar%
+	start = 0
+	p = -Inf
+	for(i in 1:le)
 	{
 		myord = c (i:1, le:(i+1))
 		if (i == le)
 			myord = c(le:1)
 		
 	    re = get_hmm_order(bayes_score, mean_score, ordIndex, cls_num, myord, rdata)
-    	re$p
+		if (max(re$p) > p)
+		{
+			start = i
+			p = max(re$p)
+		}    	
 	}
 
-	p = apply(log_lk, 2, max)
-	start = which(p == max(p))
+	#p = apply(log_lk, 2, max)
+	#start = which(p == max(p))
 
 	return(start)
 }
