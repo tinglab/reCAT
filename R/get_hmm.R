@@ -163,5 +163,4 @@ get_hmm_order <- function(bayes_score, mean_score, ordIndex, cls_num, myord, rda
 
   rr = rr[myord]
   return(list(bw_result = rr, p = max(myresult$q)))
-
 }

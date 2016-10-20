@@ -125,3 +125,12 @@ the result is like follows:
 
 ####9.cluster
 Our tool can also be used to cluster cells and then find the time series of clustering result.
+
+In section 3, when you run the ***get_ordIndex*** function, you can get a .RData file which record the clustering result. ***get_cluster_result*** function can get a clustering result, scores which are calculated based on the clustering result, and the time series of the clustering result.
+
+for example:
+
+	source("get_cluster_result")
+	load("../data/Flo_test_exp.RData")
+	load("../data/bestEnsembleComplexTSP 10 - 216 Flo .RData")
+	cls_result = get_cluster_result(test_exp = test_exp, ensembleResultLst = ensembleResultLst, resultLst = resultLst, cls_num = 20)
