@@ -1,21 +1,21 @@
-##What is reCAT?
+## What is reCAT?
 
 reCAT is a modelling framework for unsynchronized single-cell transcriptome data that can reconstruct a high-resolution cell cycle time-series. It is mainly based on traveling salesman problem (TSP), Gaussian mixture model (GMM) and hidden Markov model (HMM). We developed an R based software package which is easy to use. The performance is relatively accurate and stable. Thanks for using!
 
 Software by Zehua Liu, Huazhe Lou and Hao Wang. reCAT is explained in more detail in the accompanying publication. 
 
-##Philosophy
+## Philosophy
 
 Two fundamental assumptions underlie the reCAT approach: that 1) different cell cycle phases form a cycle, and 2) the change of transcriptome profile from one phase to the next should be monotonic, increasing with time span widths. 
 
-##Installation
+## Installation
 
 
-##How to use
+## How to use
 
 reCAT is achieved in R and is easy to use. there are some test data in /data, now we use ola_mES_2i.RData as example.
 
-####1.preparatory work
+#### 1.preparatory work
 
 when you use our tool, you should install some packages first, the package list is as follows:
 
@@ -29,7 +29,7 @@ when you use our tool, you should install some packages first, the package list 
 
 ***TSP***
 
-####2.input data
+#### 2.input data
 
 in reCAT, there are some  requirements for the input data. 
 
@@ -39,7 +39,7 @@ in reCAT, there are some  requirements for the input data.
 
 when you load the ola_mES_2i.RData, you can see a matrix named "test_exp" and it is a standard input data.
 
-####3.get order
+#### 3.get order
 
 When you preprocessing your test data, you can get its order(cell's time series) easily with ***get_ordIndex*** function. In this function, there are two parameters, one is the input data, the other is thread number, the threaad number depends on the number of cores. So maybe you can choose a large thread number like 20 to speed it up when you run it on a server.
 
@@ -49,7 +49,7 @@ for example:
 	load("../data/ola_mES_2i.RData")
 	ordIndex <- get_ordIndex(test_exp, 10)
 
-####4.get bayes-score and mean-score
+#### 4.get bayes-score and mean-score
 In reCAT, there are two scores, bayes score and mean score, you can easily get both when you use ***get_score*** function.
 
 for example:
@@ -61,7 +61,7 @@ you can use the following two orders to view the two scores
 	score_result$bayes_score
 	score_result$mean_score
 
-####5.plot1
+#### 5.plot1
 Now you have the scores and time series(ordIndex you get before), you can draw the scores along the time series use ***plot*** function
 
 	source("plot.R")
@@ -74,7 +74,7 @@ the result is like follows:
 <img src="./pic/ola_2i_mean.png" width = "300" height = "200" alt="ola_2i_mean"/>
 </div>
 
-####6.HMM
+#### 6.HMM
 Now you have the scores and time series, but you don't know whether the cell is G1 or S or G2/M. In this case, you can use ***get_hmm_order*** function
 to sort the cells.
 
@@ -95,7 +95,7 @@ for example:
 		mean_score = score_result$mean_score, 
 		ordIndex = ordIndex, cls_num = 3, myord = myord, rdata = rdata)
 
-####7.choose the start 
+#### 7.choose the start 
 From the example above we can see the paramter "myord" permit choosing start as we like. But how can we now where the real start is? In our tool, you can use ***get_start*** function to get the real start. 
 
 In this function, we go through from 1 to le(le is the whole number of the cell) as start to get hmm result. Everytime we run ***get_hmm_ord*** function, we can get a likelihood, and then we find the maximum likelihood, this is the real start. The paramter nthread is the number of thread you can choose, default is 3. The other paramters is the same as ***get_hmm_ord***.
@@ -107,7 +107,7 @@ for example:
 		mean_score = score_result$mean_score, 
 		ordIndex = ordIndex, cls_num = 3, rdata = rdata, nthread = 3)
 
-####8.plot2
+#### 8.plot2
 Now you have the scores, time series and classified information, you can draw these use ***plot*** function
 
 In this function, cls_result is classified information you get in HMM. cls_ord is time series you choose, just like the myord in secetion 6. colorbar is a boolean value, 1 is draw the color bar, 0 is not.
@@ -123,7 +123,7 @@ the result is like follows:
 <img src="./pic/ola_2i_mean_hmm.png" width = "300" height = "200" alt="ola_2i_mean_hmm"/>
 </div>
 
-####9.cluster
+#### 9.cluster
 Our tool can also be used to cluster cells and then find the time series of clustering result.
 
 In section 3, when you run the ***get_ordIndex*** function, you can get a .RData file which record the clustering result. ***get_cluster_result*** function can get a clustering result, scores which are calculated based on the clustering result, and the time series of the clustering result.
