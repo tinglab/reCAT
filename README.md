@@ -98,7 +98,7 @@ for example:
 ####7.choose the start 
 From the example above we can see the paramter "myord" permit choosing start as we like. But how can we now where the real start is? In our tool, you can use ***get_start*** function to get the real start. 
 
-In this function, we go through from 1 to le(le is the whole number of the cell) as start to get hmm result. Everytime we run ***get_hmm_ord*** function, we can get a likelyhood, and then we find the maximum likelyhood, this is the real start. The paramter nthread is the number of thread you can choose, default is 3. The other paramters is the same as ***get_hmm_ord***.
+In this function, we go through from 1 to le(le is the whole number of the cell) as start to get hmm result. Everytime we run ***get_hmm_ord*** function, we can get a likelihood, and then we find the maximum likelihood, this is the real start. The paramter nthread is the number of thread you can choose, default is 3. The other paramters is the same as ***get_hmm_ord***.
 
 for example:
 

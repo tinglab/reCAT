@@ -27,7 +27,7 @@ get_score <- function(talentDE)
   
   vector.data <- t(getVector(talentDE, markers))
   
-  pred <- Naive(vector.training, length(G1.id), length(S.id), length(G2M.id), 197, vector.data)
+  pred <- Naive(vector.training, length(G1.id), length(S.id), length(G2M.id), dim(training.data)[2], vector.data)
   
   result <- averageScoreall(talentDE, allgene)
   
