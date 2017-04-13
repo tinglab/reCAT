@@ -29,15 +29,14 @@ when you use our tool, you should install some packages first, the package list 
 
 ***TSP***
 
-#### 2.input data
+#### 2.data preprocessing
 
-in reCAT, there are some  requirements for the input data. 
+in reCAT, the value in data should be log2(TPM+1), and then you can use ***get_test_exp*** function to get standard input data
 
-1. the genes must be in ***cyclebaseGeneList***
-2. the genes name must be translated to there annotation like "ENSMUSG00000096210"
-3. the value in data is log2(TPM+1)
+	source("get_test_exp.R")
+	test_exp <- get_test_exp(data)
 
-when you load the ola_mES_2i.RData, you can see a matrix named "test_exp" and it is a standard input data.
+in test_exp, there are only cycle base gene's value, we just do a filter on the original data, so that the data is easy to handle in following steps
 
 #### 3.get order
 
