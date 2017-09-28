@@ -10,7 +10,7 @@ get_ordIndex <- function(test_exp, threadnum, step_size = 2, base_cycle_range = 
 {
   result <- bestEnsembleComplexTSP(test_exp = test_exp, TSPFold = 2, beginNum = 10, endNum = dim(test_exp)[1], threads = threadnum, base_cycle_range = base_cycle_range, step_size = step_size, max_loop = max_loop, max_num = 300)
   ord <- result$ensembleResultLst[dim(result$ensembleResultLst)[1], ]
-  print(ord)
+  #print(ord)
   ordIndex <- order(ord)
   return(ordIndex)
 }
