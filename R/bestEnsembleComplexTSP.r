@@ -70,8 +70,8 @@ bestEnsembleComplexTSP <- function(test_exp, stageIdxSmp = NULL, TSPFold = 2, be
 
 
 	
-	print(total_rows)
-	print(dim(resultLst))
+	#print(total_rows)
+	#print(dim(resultLst))
 	
 	highCorLst <- c()
 	finalHighCorLst <- c()
@@ -151,7 +151,7 @@ bestEnsembleComplexTSP <- function(test_exp, stageIdxSmp = NULL, TSPFold = 2, be
 
 	highNum <- which(tmpCorLst == max(tmpCorLst))[1]-1
 	
-	print(highNum)
+	#print(highNum)
 	
 	j2 <- 2*base_cycle_range[2]
 	k2 <- 2*base_cycle_range[3]
@@ -167,10 +167,10 @@ bestEnsembleComplexTSP <- function(test_exp, stageIdxSmp = NULL, TSPFold = 2, be
 	highNum <- (highNum - k) / k2#18
 	j <- highNum %% j2#16
 
-	print(l)
-	print(k)
-	print(j)
-	print(max(tmpCorLst))
+	#print(l)
+	#print(k)
+	#print(j)
+	#print(max(tmpCorLst))
 	tmpResultLst[1, ] <- rotateResult(j1-1, tmpResultLst[1, ], normalize = 1)#7, tmpResultLst[1, ], normalize = 1)
 	if (j < j3)#8)
 	{
@@ -195,7 +195,7 @@ bestEnsembleComplexTSP <- function(test_exp, stageIdxSmp = NULL, TSPFold = 2, be
 	}
 	baseResult <- colMeans(tmpResultLst)
 	
-  print(baseResult)
+  #print(baseResult)
   
 	normalizedResultLst[1, ] <- baseResult
 	ensembleResultLst[1, ] <- baseResult
@@ -310,8 +310,8 @@ bestEnsembleComplexTSP <- function(test_exp, stageIdxSmp = NULL, TSPFold = 2, be
 		message(Sys.time())
 	
 	#for (clust_num_EM in (beginNum + 1): endNum)
-	print(dim(normalizedResultLst))
-	print(normalizedResultLst[1,])
+	#print(dim(normalizedResultLst))
+	#print(normalizedResultLst[1,])
 	assign("norm_new", normalizedResultLst, .GlobalEnv)
 	i <- 2
 	for (clust_num_EM in seq_list)#seq(from = beginNum+step_size, to = endNum, by = step_size))
