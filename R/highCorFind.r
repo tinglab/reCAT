@@ -1,8 +1,7 @@
-
-source("forceTSP.r")
-
+#library(lineprof)
 rotateResult <- function(clust_num_EM, result, rotate = 0, back = FALSE, normalize = 0, type = "points")
 {
+  #pause(0.1)
 	sum <- 0
 	newresult <- result
 	if (back)
@@ -57,7 +56,7 @@ highCorFind <- function(clust_num_EM,test_exp,stageIdxSmp,TSPFold = 2, TSPEvalut
 		SIdxSmp <- stageIdxSmp[["S"]]
 		G2MIdxSmp <- stageIdxSmp[["G2M"]]
 	}
-
+  #pause(0.1)
 	#EM GMM Algorithm  Mclust()  mclust package
 	if (clust_num_EM >= dim(test_exp)[1])
 	{
@@ -66,7 +65,7 @@ highCorFind <- function(clust_num_EM,test_exp,stageIdxSmp,TSPFold = 2, TSPEvalut
 	else if (clustMethod == "GMM")
 	{
 		require(mclust)
-		fit_EM = Mclust(test_exp,G=clust_num_EM)#G can be a vector, then use BIC to calculate the best components number
+		fit_EM = Mclust(test_exp,G=clust_num_EM)#, modelNames = "EII")#G can be a vector, then use BIC to calculate the best components number
 		EM_result <- fit_EM$classification
 	}
 	else if (clustMethod == "Pam")
@@ -116,6 +115,7 @@ highCorFind <- function(clust_num_EM,test_exp,stageIdxSmp,TSPFold = 2, TSPEvalut
 	highCorLst <- c()
 	tourLength <- 0
 	resultLst <- matrix(0, nrow = (TSPFold*clust_num_EM), ncol = length(EM_result))
+	#pause(0.1)
 	for (t in 1:(TSPFold*clust_num_EM)){
 		if (TSPMethod != "force")
 		{
