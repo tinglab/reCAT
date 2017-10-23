@@ -38,7 +38,7 @@ in reCAT, the value in data should be log2(TPM+1), and then you can use ***get_t
 
 in test_exp, there are only cycle base gene's value, we just do a filter on the original data, so that the data is easy to handle in following steps
 
-#### 3.get order
+#### 3.get order (please see * for further parameters)
 
 When you preprocessing your test data, you can get its order(cell's time series) easily with ***get_ordIndex*** function. In this function, there are two parameters, one is the input data, the other is thread number, the threaad number depends on the number of cores. So maybe you can choose a large thread number like 20 to speed it up when you run it on a server.
 
@@ -134,3 +134,18 @@ for example:
 	load("../data/bestEnsembleComplexTSP 10 - 216 Flo .RData")
 	cls_result = get_cluster_result(test_exp = test_exp, ensembleResultLst = ensembleResultLst, 
 									resultLst = resultLst, cls_num = 20)
+
+#### * Additional Parameters for get_ordIndex function:
+ordIndex <- get_ordIndex(test_exp, threadnum, step_size, base_cycle_range). 
+
+It is trivial that test_exp is your input data and threadnum is the number of cores to use as mentined above. 
+
+The step_size parameter determines the number of k to skip in your consensus path, ie if step_size = 2, then reCAT would only calculate and merge the paths for k = 12, 14, 16, 18, …, n-2, n. We recommend step_size of up to a maximum of 5 while preserving the performance of reCAT. Usually a step_size of 2 (by default) would suffice and bigger steps are recommended for larger datasets (>1000 cells) in order to reduce computational time.
+
+And finally the base_cycle_range is a range of four k’s for computing the reference cycle mentioned in the manuscript. This can be set to 6:9 (by default) or 7:10. 
+
+for example:
+
+	source("get_ordIndex.R")
+	load("../data/ola_mES_2i.RData")
+	ordIndex <- get_ordIndex(test_exp, threadnum = 10, step_size = 2, base_cycle_range = c(6:9) )
