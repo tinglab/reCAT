@@ -38,7 +38,7 @@ in reCAT, the value in data should be log2(TPM+1), and then you can use ***get_t
 
 in test_exp, there are only cycle base gene's value, we just do a filter on the original data, so that the data is easy to handle in following steps
 
-#### 3.get order (please see * for further parameters)
+#### 3.get order (please see * for additional parameters)
 
 When you preprocessing your test data, you can get its order(cell's time series) easily with ***get_ordIndex*** function. In this function, there are two parameters, one is the input data, the other is thread number, the threaad number depends on the number of cores. So maybe you can choose a large thread number like 20 to speed it up when you run it on a server.
 
