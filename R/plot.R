@@ -53,7 +53,7 @@ plot_bayes <- function(bayes_score, ordIndex, cls_result = NULL, cls_ord = NULL,
         cls_ord = c(1:length(ordIndex))
       }
       
-      col = col[cls_ord]
+      #col = col[cls_ord]
       cell = bayes_score[ordIndex, ][cls_ord, ]
       
       data <- data.frame(x = rep(1:length(ordIndex), 3),
@@ -87,7 +87,7 @@ plot_bayes <- function(bayes_score, ordIndex, cls_result = NULL, cls_ord = NULL,
       {
         cls_ord = c(1:length(ordIndex))
       }
-      col = col[cls_ord]
+      #col = col[cls_ord]
       cell = bayes_score[ordIndex, ][cls_ord, ]
       
       data <- data.frame(x = rep(1:length(ordIndex), 3),
@@ -147,7 +147,7 @@ plot_mean <- function(mean_score, ordIndex, cls_result = NULL, cls_ord = NULL, c
       {
         cls_ord = c(1:length(ordIndex))
       }
-      col = col[cls_ord]
+      #col = col[cls_ord]
       cell = mean_score[ordIndex, ][cls_ord, ]
       
       data2 <- data.frame(x = rep(1:length(ordIndex),6), 
@@ -186,7 +186,7 @@ plot_mean <- function(mean_score, ordIndex, cls_result = NULL, cls_ord = NULL, c
       {
         cls_ord = c(1:length(ordIndex))
       }
-      col = col[cls_ord]
+      #col = col[cls_ord]
       cell = mean_score[ordIndex, ][cls_ord, ]
       
       data2 <- data.frame(x = rep(1:length(ordIndex),6), 
