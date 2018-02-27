@@ -161,5 +161,5 @@ get_hmm_order <- function(bayes_score, mean_score, ordIndex, cls_num, myord, rda
   rr <- rev(rr)
   rr[1] = order(rs1$rmat[1,])[cls_num]
 
-  return(list(bw_result = rr, p = max(myresult$q)))
+  return(rr)
 }
