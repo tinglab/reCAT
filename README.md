@@ -31,7 +31,7 @@ when you use our tool, you should install some packages first, the package list 
 
 #### 2.data preprocessing
 
-in reCAT, the value in data should be log2(TPM+1), and then you can use ***get_test_exp*** function to get standard input data
+in reCAT, the value in test_exp should be log2(TPM+1), and then you can use ***get_test_exp*** function to get standard input data
 
 	source("get_test_exp.R")
 	load("../data/ola_mES_2i.RData")
