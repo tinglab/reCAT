@@ -34,7 +34,8 @@ when you use our tool, you should install some packages first, the package list 
 in reCAT, the value in data should be log2(TPM+1), and then you can use ***get_test_exp*** function to get standard input data
 
 	source("get_test_exp.R")
-	test_exp <- get_test_exp(data)
+	load("../data/ola_mES_2i.RData")
+	test_exp <- get_test_exp(test_exp)
 
 in test_exp, there are only cycle base gene's value, we just do a filter on the original data, so that the data is easy to handle in following steps
 
@@ -45,7 +46,6 @@ When you preprocessing your test data, you can get its order(cell's time series)
 for example:
 
 	source("get_ordIndex.R")
-	load("../data/ola_mES_2i.RData")
 	ordIndex <- get_ordIndex(test_exp, 10)
 
 #### 4.get bayes-score and mean-score
