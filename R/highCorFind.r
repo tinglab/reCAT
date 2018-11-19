@@ -1,4 +1,3 @@
-#library(lineprof)
 source("forceTSP.r")
 rotateResult <- function(clust_num_EM, result, rotate = 0, back = FALSE, normalize = 0, type = "points")
 {
