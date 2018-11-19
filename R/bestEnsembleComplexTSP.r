@@ -6,7 +6,6 @@
 # debug = TRUE
 # name = ""
 # threads = 1
-library(lineprof)
 source("highCorFind.r")
 
 round2 = function(x, n) {
