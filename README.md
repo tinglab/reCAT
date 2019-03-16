@@ -35,7 +35,7 @@ in reCAT, the value in test_exp should be log2(TPM+1), and then you can use ***g
 
 	source("get_test_exp.R")
 	load("../data/ola_mES_2i.RData")
-	test_exp <- get_test_exp(test_exp)
+	test_exp <- get_test_exp(t(test_exp))
 
 in test_exp, there are only cycle base gene's value, we just do a filter on the original data, so that the data is easy to handle in following steps
 
